@@ -23,6 +23,10 @@ export class BooksDatabase {
         return this.db.query("SELECT * FROM books WHERE id = ?").get(id)
     }
 
+    async getBookByName(name: string) {
+        return this.db.query("SELECT * FROM books WHERE name = ?").get(name)
+    }
+
     async addBook(book: TBook) {
         return this.db.query("INSERT INTO books (name, author, createdAt, insertedAt) VALUES (?, ?, ?, ?) RETURNING id").get(book.name, book.author, book.createdAt, new Date().toISOString().slice(0, 10)) as TBook;
     }
@@ -35,9 +39,9 @@ export class BooksDatabase {
         }
     }
 
-    async deleteBook(id: number) {
+    async deleteBookById(id: number) {
         if(typeof id !== "undefined" && typeof id !== null){
-            return this.db.run(`DELETE FROM books WHERE id = "${id}`)
+            return this.db.query(`DELETE FROM books WHERE id = ?`).get(id)
         } else {
             this.logger.log("ID book is required")
         }
