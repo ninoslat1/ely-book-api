@@ -7,7 +7,7 @@ const app = new Elysia()
             .decorate('db', new BooksDatabase())
             .decorate('logger', new Logger())
             .get("/books", ({db}) => db.getBooks())
-            .post("/books", async ({ db, body }) => {
+            .post("/book", async ({ db, body }) => {
               const isExist = await db.getBookByName(body.name)
               if (!isExist) {   
                 const createAction = (await db.addBook(body)).id;
@@ -29,6 +29,23 @@ const app = new Elysia()
 
               const book = await db.getBookById(parseInt(id))
               return { success: true, data: book}
+            })
+            .patch("/book/:id", async ({db, params, body}) => {
+              const {id} = params
+              const {name, author} = body
+
+              const isExist = await db.getBookById(parseInt(id))
+              if(isExist) {
+                const updateAction = await db.updateBookById(parseInt(id), author, name)
+                return {success: true, message: "Book updated successfully"}
+              } else {
+                return { success: false, message: "Book not found"}
+              }
+            }, {
+              body: t.Object({
+                name: t.String(),
+                author: t.String()
+              })
             })
             .delete("/book/:id", async ({db, params}) => {
               const {id} = params
