@@ -2,6 +2,6 @@ export type TBook = {
     id?: number
     name: string
     author: string
-    createdAt: Date
+    createdAt: string
     insertedAt: Date
 }
