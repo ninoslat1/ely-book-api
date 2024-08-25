@@ -11,8 +11,8 @@ export class BooksDatabase {
         this.db = new Database('books.db')
         this.logger = new Logger()
         this.init()
-            .then(() => this.logger.log("Database initialized"))
-            .catch((error: Error) => this.logger.log(error.message))
+        .then(() => this.logger.log("Book database initialized"))
+        .catch((error: Error) => this.logger.log(error.message))
     }
 
     async getBooks() {
@@ -22,8 +22,6 @@ export class BooksDatabase {
     async getBookById(id: number) {
         if(typeof id !== "undefined" && typeof id !== null){
             return this.db.query("SELECT * FROM books WHERE id = ?").get(id)
-        } else {
-            this.logger.log("ID book is required")
         }
     }
 
@@ -35,19 +33,15 @@ export class BooksDatabase {
         return this.db.query("INSERT INTO books (name, author, createdAt, insertedAt) VALUES (?, ?, ?, ?) RETURNING id").get(book.name, book.author, book.createdAt, new Date().toISOString().slice(0, 10)) as TBook;
     }
     
-    async updateBookById(id: number, name: string, author:string) {
-        if(typeof id !== "undefined" && typeof id !== null){
-            return this.db.query("UPDATE books SET name = ?, author = ? WHERE id = ?").get(name, author, id);
-        } else {
-            this.logger.log("ID book is required")
+    async updateBookById(book: Pick<TBook, "author" | "id" | "name">) {
+        if(typeof book.id !== "undefined" && typeof book.id !== null){
+            return this.db.query("UPDATE books SET name = ?, author = ? WHERE id = ?").get(book.name, book.author, book.id);
         }
     }
 
-    async deleteBookById(id: number) {
-        if(typeof id !== "undefined" && typeof id !== null){
-            return this.db.query(`DELETE FROM books WHERE id = ?`).get(id)
-        } else {
-            this.logger.log("ID book is required")
+    async deleteBookById(book: Pick<TBook, "author" | "id" | "name">) {
+        if(typeof book.id !== "undefined" && typeof book.id !== null){
+            return this.db.query(`DELETE FROM books WHERE id = ? AND name = ? AND author = ?`).get(book.id, book.name, book.author)
         }
     }
 

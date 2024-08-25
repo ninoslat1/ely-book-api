@@ -5,3 +5,9 @@ export type TBook = {
     createdAt: string
     insertedAt: Date
 }
+
+export type TUser = {
+    id?: number
+    username: string
+    password:string
+}
