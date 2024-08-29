@@ -29,7 +29,8 @@ export const userRoute = new Elysia()
                             return { success: false, message: "User already exists"}
                         }
                     }, {
-                        body: UserSchema
+                        body: UserSchema,
+                        bodyStreamType: 'form-data'
                     })
                     .post("/login", async ({user, body, set, jwt, cookie: {Cookie}}) => {
                         const isExist = await user.login(body)
@@ -56,6 +57,7 @@ export const userRoute = new Elysia()
                             return { success: false, message: `Wrong username or passsword`}
                         }
                     }, {
-                        body: UserSchema
+                        body: UserSchema,
+                        bodyStreamType: 'form-data'
                     })
                     

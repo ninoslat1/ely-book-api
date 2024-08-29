@@ -3,6 +3,8 @@ import { BooksDatabase } from "../db/book";
 import { TBook } from "../lib/type";
 import jwt from "@elysiajs/jwt";
 import { BookSchema, DetailsBookSchema } from "../dto/book";
+import { ElysiaWS } from "elysia/dist/ws";
+import { ServerWebSocket } from "bun";
 
 export const bookRoute = new Elysia()
                         .use(jwt({ name: 'jwt', secret: Bun.env.JWT_SECRET as string}))
@@ -70,7 +72,8 @@ export const bookRoute = new Elysia()
                                 return { success: false, message: "Book not found"}
                             }
                             }, {
-                            body: BookSchema
+                            body: BookSchema,
+                            bodyStreamType: 'form-data'
                         })
                         .delete("/book/:id", async ({book, params, body}) => {
                             const {id} = params
@@ -89,5 +92,12 @@ export const bookRoute = new Elysia()
                                 return {success: false, message: "Book not found"}
                             }
                             }, {
-                            body: BookSchema
-                        })  
+                            body: BookSchema,
+                            bodyStreamType: 'form-data'
+                        })
+                        .ws('/ws/book', {
+                            message(ws, message) {
+                                ws.send(message)
+                            }
+                        })
+                        
