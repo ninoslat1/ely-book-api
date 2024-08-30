@@ -1,10 +1,11 @@
-import Elysia, { t } from "elysia";
+import Elysia, { Context, t } from "elysia";
 import { BooksDatabase } from "../db/book";
 import { TBook } from "../lib/type";
 import jwt from "@elysiajs/jwt";
 import { BookSchema, DetailsBookSchema } from "../dto/book";
 import { ElysiaWS } from "elysia/dist/ws";
 import { ServerWebSocket } from "bun";
+import swagger from "@elysiajs/swagger";
 
 export const bookRoute = new Elysia()
                         .use(jwt({ name: 'jwt', secret: Bun.env.JWT_SECRET as string}))
@@ -95,9 +96,9 @@ export const bookRoute = new Elysia()
                             body: BookSchema,
                             bodyStreamType: 'form-data'
                         })
-                        .ws('/ws/book', {
-                            message(ws, message) {
-                                ws.send(message)
-                            }
-                        })
+                        // .ws('/ws/book', {
+                        //     open(ws: ServerWebSocket<{id: string, data: Context}>): th {
+
+                        //     }
+                        // })
                         
