@@ -4,13 +4,26 @@ import { TBook } from "../lib/type";
 import jwt from "@elysiajs/jwt";
 import { BookSchema, DetailsBookSchema } from "../dto/book";
 import { ElysiaWS } from "elysia/dist/ws";
-import { ServerWebSocket } from "bun";
-import swagger from "@elysiajs/swagger";
+import { checkRateLimit } from "../pkg/rateLimiter";
+
 
 export const bookRoute = new Elysia()
+                        .guard({
+                            beforeHandle(context) {
+                            const ip = context.request.headers.get('X-Forwarded-For') as string || context.request.headers.get('X-Real-IP') as string || context.request.headers.get('Host') as string
+                            const date = Date.now()
+                            if(checkRateLimit({ip, date})){
+                                context.set.status = 429
+                                return { success: false, message: "Terlalu banyak permintaan"}
+                            }
+                            }
+                        })
                         .use(jwt({ name: 'jwt', secret: Bun.env.JWT_SECRET as string}))
                         .decorate('book', new BooksDatabase())
-                        .get("/books", ({book}) => book.getBooks())
+                        .get("/books", async ({book, set, request}) => {
+                            const bookList = await book.getBooks()
+                            return {success: true, data: bookList}
+                        })
                         .post("/book", async ({ book, body, set, jwt, cookie: {Cookie} }) => {
                             const isLoggedIn = await jwt.verify(Cookie.value)
                             const isExist = await book.getBookByName(body.name)

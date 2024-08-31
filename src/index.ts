@@ -1,8 +1,9 @@
-import { Elysia, t } from "elysia";
+import { Context, Cookie, Elysia, t } from "elysia";
 import { Logger } from "./lib/class";
 import { userRoute } from "./routes/user";
 import { bookRoute } from "./routes/book";
 import swagger from "@elysiajs/swagger";
+import { APP_PORT, APP_VERSION } from "./lib/constant";
 
 const logger = new Logger()
 
@@ -11,13 +12,13 @@ const app = new Elysia()
               documentation: {
                   info: {
                       title: "Elysia Book API Documentation",
-                      version: "1.0.0"
+                      version: APP_VERSION
                   }
               }
             }))
             .use(userRoute)
             .use(bookRoute)
-            .listen(3000);
+            .listen(APP_PORT);
 
 
 logger.log(

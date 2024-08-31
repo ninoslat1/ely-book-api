@@ -1,3 +1,5 @@
+import { AnyElysia } from "elysia"
+
 export type TBook = {
     id?: number
     name: string
@@ -10,4 +12,8 @@ export type TUser = {
     id?: number
     username: string
     password:string
+}
+
+export type TRateLimiter = {
+    [ip: string]: number
 }
