@@ -109,9 +109,4 @@ export const bookRoute = new Elysia()
                             body: BookSchema,
                             bodyStreamType: 'form-data'
                         })
-                        // .ws('/ws/book', {
-                        //     open(ws: ServerWebSocket<{id: string, data: Context}>): th {
-
-                        //     }
-                        // })
                         

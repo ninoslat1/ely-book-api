@@ -4,6 +4,7 @@ import { userRoute } from "./routes/user";
 import { bookRoute } from "./routes/book";
 import swagger from "@elysiajs/swagger";
 import { APP_PORT, APP_VERSION } from "./lib/constant";
+import { wsRoute } from "./routes/ws";
 
 const logger = new Logger()
 
@@ -18,6 +19,7 @@ const app = new Elysia()
             }))
             .use(userRoute)
             .use(bookRoute)
+            .use(wsRoute)
             .listen(APP_PORT);
 
 
