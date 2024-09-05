@@ -17,3 +17,8 @@ export type TUser = {
 export type TRateLimiter = {
     [ip: string]: number
 }
+
+export type TStatistic = {
+    book_count: number
+    user_count: number
+}
