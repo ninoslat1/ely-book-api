@@ -1,5 +1,5 @@
 import {Database} from "bun:sqlite"
-import { TStatistic } from "../lib/type";
+import { TBook, TStatistic } from "../lib/type";
 
 export class StatsDatabase {
     private db: Database
@@ -19,5 +19,10 @@ export class StatsDatabase {
           user_count: result.user_count,
           book_count: result.book_count
         };
-      }
+    }
+
+    async getLatestBook(): Promise<TBook[]> {
+      const result = this.db.query(`SELECT * FROM books ORDER BY id DESC LIMIT 5;`).all()
+      return result.map((book: unknown) => book as TBook);
+    }
 }
